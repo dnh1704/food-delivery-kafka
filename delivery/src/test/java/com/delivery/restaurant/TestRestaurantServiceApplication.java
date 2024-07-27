@@ -1,6 +1,6 @@
 package com.assessment.restaurant;
 
-import com.assessment.delivery.RestaurantServiceApplication;
+import com.assessment.delivery.DeliveryServiceApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -25,7 +25,7 @@ public class TestRestaurantServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.from(RestaurantServiceApplication::main).with(TestRestaurantServiceApplication.class).run(args);
+		SpringApplication.from(DeliveryServiceApplication::main).with(TestRestaurantServiceApplication.class).run(args);
 	}
 
 }

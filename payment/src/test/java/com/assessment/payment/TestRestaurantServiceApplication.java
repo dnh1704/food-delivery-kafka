@@ -24,7 +24,7 @@ public class TestRestaurantServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.from(RestaurantServiceApplication::main).with(TestRestaurantServiceApplication.class).run(args);
+		SpringApplication.from(PaymentServiceApplication::main).with(TestRestaurantServiceApplication.class).run(args);
 	}
 
 }
