@@ -26,10 +26,10 @@ public class OrderDetailsEventHandler {
         log.info("received order details event : {}", orderDetails);
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
         if(orderDetails.billingAmount().intValue() >= 1000000){
-            paymentEventService.sendRestaurantStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(), PaymentStatus.CANCELLED.name()));
+            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(), PaymentStatus.CANCELLED.name()));
         }else{
 
-            paymentEventService.sendRestaurantStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(), PaymentStatus.APPROVED.name()));
+            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(), PaymentStatus.APPROVED.name()));
         }
     }
 }
