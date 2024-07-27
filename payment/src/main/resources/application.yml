@@ -27,7 +27,7 @@ spring:
       details:
         topic:
           name: order-details
-    restaurant:
+    payment:
       status:
         topic:
           name: payment-status
