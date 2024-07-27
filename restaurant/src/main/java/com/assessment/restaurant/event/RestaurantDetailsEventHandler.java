@@ -9,26 +9,31 @@ import lombok.extern.slf4j.*;
 import org.springframework.kafka.annotation.*;
 import org.springframework.stereotype.*;
 
-import java.util.concurrent.*;
-
 /**
  * @author Krishna Chaitanya
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OrderDetailsEventHandler {
+public class RestaurantDetailsEventHandler {
 
     private final RestaurantOrderRepository restaurantOrderRepository;
     private final RestaurantOrderItemRepository restaurantOrderItemRepository;
 
     private final RestaurantEventService restaurantEventService;
+    private final PaymentEventService paymentEventService;
 
-    @KafkaListener(topics = "${spring.kafka.order.details.topic.name:order-details}", groupId = "order-details")
+    private final OrderDetailsEventService OrderDetailsEventService;
+
+    @KafkaListener(topics = "${spring.kafka.payment.details.topic.name:payment-details}", groupId = "payment-details")
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
-        if(orderDetails.items().size() >= 3){
+        if(orderDetails.restaurantId() >= 100){
             restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(orderDetails.orderId(), RestaurantStatus.CANCELLED.name()));
+            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails, OrderStatus.CANCELLED.name()));
+            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(),PaymentStatus.CANCELLED.name()));
+            //send order cancel
+            //send payment
         }else{
             var restaurantOrder = restaurantOrderRepository.save(
                     RestaurantOrder
@@ -47,8 +52,7 @@ public class OrderDetailsEventHandler {
                     .toList();
             restaurantOrderItemRepository.saveAll(restaurantOrderItems);
 
-            // sleep 5 seconds
-            TimeUnit.SECONDS.sleep(5);
+
 
             restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
             restaurantOrderRepository.save(restaurantOrder);
