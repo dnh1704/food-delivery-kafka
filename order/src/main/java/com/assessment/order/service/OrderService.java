@@ -47,9 +47,6 @@ public class OrderService {
             order.setOrderStatus(OrderStatus.PROCESSING);
             orderRepository.save(order);
 
-            // send order details to invoice service through an API call
-            invoiceService.sendInvoice(OrderUtil.convertOrderRequestToOrderDetails(order, orderRequest));
-
             // publish order details event
             publishOrderCreationEvent(order, orderRequest);
 

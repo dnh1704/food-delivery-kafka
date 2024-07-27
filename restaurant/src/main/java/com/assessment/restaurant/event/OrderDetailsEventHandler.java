@@ -27,28 +27,32 @@ public class OrderDetailsEventHandler {
     @KafkaListener(topics = "${spring.kafka.order.details.topic.name:order-details}", groupId = "order-details")
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
-        var restaurantOrder = restaurantOrderRepository.save(
-                RestaurantOrder
-                        .builder()
-                        .orderId(orderDetails.orderId())
-                        .restaurantId(orderDetails.restaurantId())
-                        .billingAmount(orderDetails.billingAmount())
-                        .restaurantStatus(RestaurantStatus.PROCESSING)
-                        .build()
-        );
+        if(orderDetails.items().size() >= 3){
+            restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(orderDetails.orderId(), RestaurantStatus.CANCELLED.name()));
+        }else{
+            var restaurantOrder = restaurantOrderRepository.save(
+                    RestaurantOrder
+                            .builder()
+                            .orderId(orderDetails.orderId())
+                            .restaurantId(orderDetails.restaurantId())
+                            .billingAmount(orderDetails.billingAmount())
+                            .restaurantStatus(RestaurantStatus.PROCESSING)
+                            .build()
+            );
 
-        var restaurantOrderItems = orderDetails
-                .items()
-                .stream()
-                .map(i -> RestaurantOrderItem.from(i, restaurantOrder.getId()))
-                .toList();
-        restaurantOrderItemRepository.saveAll(restaurantOrderItems);
+            var restaurantOrderItems = orderDetails
+                    .items()
+                    .stream()
+                    .map(i -> RestaurantOrderItem.from(i, restaurantOrder.getId()))
+                    .toList();
+            restaurantOrderItemRepository.saveAll(restaurantOrderItems);
 
-        // sleep 5 seconds
-        TimeUnit.SECONDS.sleep(5);
+            // sleep 5 seconds
+            TimeUnit.SECONDS.sleep(5);
 
-        restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
-        restaurantOrderRepository.save(restaurantOrder);
-        restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(restaurantOrder.getOrderId(), RestaurantStatus.APPROVED.name()));
+            restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
+            restaurantOrderRepository.save(restaurantOrder);
+            restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(restaurantOrder.getOrderId(), RestaurantStatus.APPROVED.name()));
+        }
     }
 }
