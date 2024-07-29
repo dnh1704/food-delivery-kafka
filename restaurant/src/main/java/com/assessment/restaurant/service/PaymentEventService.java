@@ -19,7 +19,4 @@ public class PaymentEventService {
         paymentStatusDetailsKafkaProducer.writeToKafka(paymentStatusDetails);
     }
 
-    public void sendOrderStatusDetailsEvent(PaymentStatusDetails paymentStatusDetails) {
-        paymentStatusDetailsKafkaProducer.writeToKafka(paymentStatusDetails);
-    }
 }

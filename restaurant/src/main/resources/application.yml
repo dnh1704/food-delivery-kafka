@@ -9,7 +9,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 10.1.119.56:29092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -22,24 +22,34 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.assessment.*
-        spring.json.type.mapping: "com.assessment.order.dto.OrderDetails:com.assessment.restaurant.dto.OrderDetails" # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
+#        spring.json.type.mapping: "com.assessment.order.dto.OrderDetails:com.assessment.restaurant.dto.OrderDetails" # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
     order:
       details:
         topic:
           name: order-details
+      status:
+        topic:
+          name: order-status
+    payment:
+      status:
+        topic:
+          name: payment-status
     restaurant:
       status:
         topic:
           name: restaurant-status
+      details:
+        topic:
+          name: restaurant-details
 # ideally we should have add a kafka health check, but it seems quite challenging. So, for now using the timeout option
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:restaurant}
+    url: jdbc:mysql://${DB_HOST:10.1.119.56}:${DB_PORT:3313}/${DB_NAME:restaurant}
     username: ${DB_USER:user}
     password: ${DB_PASSWORD:password} # we can use key vault or system variables to store the sensitive information
 
 server:
-  port: 8081
+  port: 8082
   servlet:
     context-path: /api
 

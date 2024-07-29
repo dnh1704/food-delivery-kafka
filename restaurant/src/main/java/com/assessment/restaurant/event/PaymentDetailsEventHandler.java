@@ -15,7 +15,7 @@ import org.springframework.stereotype.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RestaurantDetailsEventHandler {
+public class PaymentDetailsEventHandler {
 
     private final RestaurantOrderRepository restaurantOrderRepository;
     private final RestaurantOrderItemRepository restaurantOrderItemRepository;
@@ -29,7 +29,7 @@ public class RestaurantDetailsEventHandler {
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
         if(orderDetails.restaurantId() >= 100){
-            restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(orderDetails.orderId(), RestaurantStatus.CANCELLED.name()));
+            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(orderDetails, RestaurantStatus.CANCELLED.name()));
             OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails, OrderStatus.CANCELLED.name()));
             paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(),PaymentStatus.CANCELLED.name()));
             //send order cancel
@@ -52,11 +52,9 @@ public class RestaurantDetailsEventHandler {
                     .toList();
             restaurantOrderItemRepository.saveAll(restaurantOrderItems);
 
-
-
             restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
             restaurantOrderRepository.save(restaurantOrder);
-            restaurantEventService.sendRestaurantStatusDetailsEvent(new RestaurantStatusDetails(restaurantOrder.getOrderId(), RestaurantStatus.APPROVED.name()));
+            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(orderDetails, RestaurantStatus.APPROVED.name()));
         }
     }
 }

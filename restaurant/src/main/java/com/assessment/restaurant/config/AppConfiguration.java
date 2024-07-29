@@ -14,9 +14,9 @@ import org.springframework.kafka.core.*;
 public class AppConfiguration {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RestaurantStatusDetails> kafkaListenerContainerFactory(
-            ConsumerFactory<String, RestaurantStatusDetails> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, RestaurantStatusDetails> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, RestaurantDetails> kafkaListenerContainerFactory(
+            ConsumerFactory<String, RestaurantDetails> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, RestaurantDetails> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.getContainerProperties().setObservationEnabled(true);
         factory.setConsumerFactory(consumerFactory);

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class OrderStatusEventProducer {
     private final KafkaTemplate<String, OrderStatusDetails> orderDetailsKafkaTemplate;
 
-    @Value("${spring.kafka.restaurant.status.topic.name:order-status}")
+    @Value("${spring.kafka.order.status.topic.name:order-status}")
     private String topic;
 
     public OrderStatusEventProducer(KafkaTemplate<String, OrderStatusDetails> orderDetailsKafkaTemplate) {

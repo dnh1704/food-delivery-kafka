@@ -13,19 +13,19 @@ import org.springframework.stereotype.*;
 @Slf4j
 public class RestaurantStatusDetailsKafkaProducer {
 
-    private final KafkaTemplate<String, RestaurantStatusDetails> orderDetailsKafkaTemplate;
+    private final KafkaTemplate<String, RestaurantDetails> orderDetailsKafkaTemplate;
 
-    @Value("${spring.kafka.restaurant.status.topic.name:restaurant-status}")
+    @Value("${spring.kafka.restaurant.detail.topic.name:restaurant-details}")
     private String topic;
 
-    public RestaurantStatusDetailsKafkaProducer(KafkaTemplate<String, RestaurantStatusDetails> orderDetailsKafkaTemplate) {
+    public RestaurantStatusDetailsKafkaProducer(KafkaTemplate<String, RestaurantDetails> orderDetailsKafkaTemplate) {
         this.orderDetailsKafkaTemplate = orderDetailsKafkaTemplate;
         this.orderDetailsKafkaTemplate.setObservationEnabled(true);
     }
 
-    public void writeToKafka(RestaurantStatusDetails restaurantStatusDetails) {
+    public void writeToKafka(RestaurantDetails restaurantStatusDetails) {
         orderDetailsKafkaTemplate
-                .send(topic, String.valueOf(restaurantStatusDetails.orderId()), restaurantStatusDetails);
+                .send(topic, String.valueOf(restaurantStatusDetails.orderDetails().orderId()), restaurantStatusDetails);
     }
 
 

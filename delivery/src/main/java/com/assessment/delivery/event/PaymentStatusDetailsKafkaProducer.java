@@ -15,7 +15,7 @@ public class PaymentStatusDetailsKafkaProducer {
 
     private final KafkaTemplate<String, PaymentStatusDetails> orderDetailsKafkaTemplate;
 
-    @Value("${spring.kafka.restaurant.status.topic.name:payment-status}")
+    @Value("${spring.kafka.payment.status.topic.name:payment-status}")
     private String topic;
 
     public PaymentStatusDetailsKafkaProducer(KafkaTemplate<String, PaymentStatusDetails> orderDetailsKafkaTemplate) {

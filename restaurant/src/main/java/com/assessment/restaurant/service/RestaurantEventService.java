@@ -14,8 +14,8 @@ public class RestaurantEventService {
 
     private final RestaurantStatusDetailsKafkaProducer restaurantStatusDetailsKafkaProducer;
 
-    public void sendRestaurantStatusDetailsEvent(RestaurantStatusDetails restaurantStatusDetails) {
-        restaurantStatusDetailsKafkaProducer.writeToKafka(restaurantStatusDetails);
+    public void sendRestaurantDetailsEvent(RestaurantDetails restaurantDetails) {
+        restaurantStatusDetailsKafkaProducer.writeToKafka(restaurantDetails);
     }
 
 }

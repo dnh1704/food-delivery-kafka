@@ -29,7 +29,6 @@ public class AppConfiguration {
     public ConcurrentKafkaListenerContainerFactory<String, RestaurantStatusDetails> kafkaListenerContainerFactory(
             ConsumerFactory<String, RestaurantStatusDetails> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, RestaurantStatusDetails> factory = new ConcurrentKafkaListenerContainerFactory<>();
-
         factory.getContainerProperties().setObservationEnabled(true);
         factory.setConsumerFactory(consumerFactory);
 

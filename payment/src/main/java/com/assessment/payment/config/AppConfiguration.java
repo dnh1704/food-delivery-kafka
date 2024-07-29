@@ -13,16 +13,16 @@ import org.springframework.kafka.core.*;
 @Configuration
 public class AppConfiguration {
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PaymentStatusDetails> kafkaListenerContainerFactory(
-            ConsumerFactory<String, PaymentStatusDetails> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, PaymentStatusDetails> factory = new ConcurrentKafkaListenerContainerFactory<>();
-
-        factory.getContainerProperties().setObservationEnabled(true);
-        factory.setConsumerFactory(consumerFactory);
-
-        return factory;
-    }
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, PaymentStatusDetails> kafkaListenerContainerFactory(
+//            ConsumerFactory<String, PaymentStatusDetails> consumerFactory) {
+//        ConcurrentKafkaListenerContainerFactory<String, PaymentStatusDetails> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//
+//        factory.getContainerProperties().setObservationEnabled(true);
+//        factory.setConsumerFactory(consumerFactory);
+//
+//        return factory;
+//    }
 
     /**
      * This bean has been added so that in the swagger-ui, we will see snake_case attributes instead of camelCase <br/>

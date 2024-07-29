@@ -9,7 +9,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
   kafka:
-    bootstrap-servers: 10.1.119.56:9092
+    bootstrap-servers: 10.1.119.56:29092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -34,7 +34,7 @@ spring:
           name: restaurant-status
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:order}
+    url: jdbc:mysql://${DB_HOST:10.1.119.56}:${DB_PORT:3312}/${DB_NAME:order}
     username: ${DB_USER:user}
     password: ${DB_PASSWORD:password} # we can use key vault or system variables to store the sensitive information
 

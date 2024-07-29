@@ -24,7 +24,7 @@ public class RestaurantDetailsEventHandler {
     private final PaymentEventService paymentEventService;
     private final OrderEventService orderEventService;
 
-    @KafkaListener(topics = "${spring.kafka.restaurant.details.topic.name:restaurant-details}", groupId = "order-details")
+    @KafkaListener(topics = "${spring.kafka.restaurant.details.topic.name:restaurant-details}", groupId = "restaurant-details")
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received restaurant details event : {}", orderDetails);
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
