@@ -1,10 +1,10 @@
 version: '3'
 services:
   order_db:
-#    profiles:
-#      - "local"
+    #    profiles:
+    #      - "local"
     platform: linux/x86_64
-    container_name: order_database
+    container_name: order_database1
     image: mysql:8.0.23
     environment:
       MYSQL_DATABASE: order
@@ -20,7 +20,7 @@ services:
     #    profiles:
     #      - "local"
     platform: linux/x86_64
-    container_name: restaurant_database
+    container_name: restaurant_database1
     image: mysql:8.0.23
     environment:
       MYSQL_DATABASE: restaurant
@@ -32,6 +32,19 @@ services:
     volumes:
       - ./restaurant/src/main/resources/db/init-schema.sql:/docker-entrypoint-initdb.d/init_db.sql
 
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+      - zookeeper
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: food_delivery_zookeeper
@@ -39,7 +52,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - "22181:2181"
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -47,34 +60,53 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "29092:29092"
+      - "9092:9092"
+    restart: "on-failure"
     environment:
-      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_ID: 101
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.1.119.56:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#      KAFKA_CREATE_TOPIC
-#        restaurant-status:1:S: >
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 20971520
+      KAFKA_PRODUCER_MAX_REQUEST_SIZE: 20971520
+      KAFKA_CONSUMER_MAX_PARTITION_FETCH_BYTES: 20971520
+      CONNECT_PRODUCER_MAX_REQUEST_SIZE: 20971520
+      CONNECT_CONSUMER_MAX_PARTITION_FETCH_BYTES: 20971520
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1 # \ ksqldb-server requires these properties
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1            # /
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
+      #      KAFKA_CREATE_TOPIC
+      #        restaurant-status:1:S: >
       ##        order-details:1:11
-# to read = kafka-console-consumer --bootstrap-server localhost:29092 --topic order-details --from-beginning
+  # to read = kafka-console-consumer --bootstrap-server localhost:29092 --topic order-details --from-beginning
 
   kafka_setup:
     image: confluentinc/cp-kafka:7.5.0
     container_name: food_delivery_kafka_setup
     depends_on:
       - kafka
-    entrypoint: ['/bin/sh', '-c']
+    entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
       # blocks until kafka is reachable
       kafka-topics --bootstrap-server kafka:9092 --list
-      
+
       echo -e 'creating kafka topics'
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order-details --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic payment-details --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic restaurant-details --replication-factor 1 --partitions 1
+
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order-status --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic payment-status --replication-factor 1 --partitions 1
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic restaurant-status --replication-factor 1 --partitions 1
-      
+
+      echo -e 'available topics'
+      kafka-topics --bootstrap-server kafka:9092 --list
+
+
       echo -e 'available topics'
       kafka-topics --bootstrap-server kafka:9092 --list
       "
