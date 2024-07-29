@@ -9,7 +9,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
   kafka:
-    bootstrap-servers: 10.1.119.56:29092
+    bootstrap-servers: 10.1.119.56:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
