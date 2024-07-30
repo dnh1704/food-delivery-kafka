@@ -1,7 +1,8 @@
 package com.assessment.order.util;
 
-import com.assessment.order.dto.*;
-import com.assessment.order.model.*;
+import com.assessment.order.dto.OrderDetails;
+import com.assessment.order.dto.OrderRequest;
+import com.assessment.order.model.Order;
 
 /**
  * @author Krishna Chaitanya
