@@ -30,7 +30,7 @@ public class PaymentDetailsEventHandler {
         log.info("received order details event : {}", paymentDetails.orderDetails());
         if(paymentDetails.orderDetails().restaurantId() >= 100){
             restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(paymentDetails.orderDetails(), RestaurantStatus.CANCELLED.name()));
-            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(paymentDetails.orderDetails(), OrderStatus.CANCELLED.name()));
+            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(paymentDetails.orderDetails().orderId(), OrderStatus.CANCELLED.name()));
             paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(paymentDetails.orderDetails().orderId(),PaymentStatus.CANCELLED.name()));
             //send order cancel
             //send payment
@@ -54,6 +54,7 @@ public class PaymentDetailsEventHandler {
 
             restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
             restaurantOrderRepository.save(restaurantOrder);
+            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(paymentDetails.orderDetails().orderId(), OrderStatus.COOKED.name()));
             restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(paymentDetails.orderDetails(), RestaurantStatus.APPROVED.name()));
         }
     }

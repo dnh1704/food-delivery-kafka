@@ -28,11 +28,11 @@ public class OrderDetailsEventHandler {
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
         if (orderDetails.billingAmount().intValue() >= 1000000) {
             System.out.println(orderDetails);
-            orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails, PaymentStatus.CANCELLED.name()));
+            orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), PaymentStatus.CANCELLED.name()));
         } else {
             System.out.println(orderDetails);
             paymentDetailsKafkaProducer.sendPaymentDetailsEvent(new PaymentDetails(orderDetails, PaymentStatus.PAID.name()));
-            orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails, PaymentStatus.PAID.name()));
+            orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), PaymentStatus.PAID.name()));
         }
     }
 }

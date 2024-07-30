@@ -1,4 +1,7 @@
 package com.assessment.payment.dto;
 
-public record OrderStatusDetails(OrderDetails orderDetails, String status) {
+/**
+ * @author Krishna Chaitanya
+ */
+public record OrderStatusDetails(int orderId, String status) {
 }

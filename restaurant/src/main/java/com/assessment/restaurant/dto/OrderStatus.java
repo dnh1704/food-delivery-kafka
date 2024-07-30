@@ -9,7 +9,8 @@ public enum OrderStatus {
     APPROVED,
     DELIVERED,
     CANCELLED,
-    PAID
+    PAID,
+    COOKED,
     // We can have some of these classes as part of a shared library, so that these can be reused/referred.
 
 }
