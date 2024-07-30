@@ -21,6 +21,6 @@ public class OrderStatusEventProducer {
 
     public void writeToKafka(OrderStatusDetails orderStatusDetails) {
         orderDetailsKafkaTemplate
-                .send(topic, String.valueOf(orderStatusDetails.orderDetails().orderId()), orderStatusDetails);
+                .send(topic, String.valueOf(orderStatusDetails.orderId()), orderStatusDetails);
     }
 }

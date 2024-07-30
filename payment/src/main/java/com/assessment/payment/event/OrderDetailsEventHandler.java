@@ -26,11 +26,11 @@ public class OrderDetailsEventHandler {
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
-        if (orderDetails.billingAmount().intValue() >= 1000000) {
-            System.out.println(orderDetails);
+        if (orderDetails.billingAmount().intValue() >= 30) {
+            System.out.println("Thanh toan khong thanh cong: " + orderDetails);
             orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), PaymentStatus.CANCELLED.name()));
         } else {
-            System.out.println(orderDetails);
+            System.out.println("Thanh toan thanh cong: " + orderDetails);
             paymentDetailsKafkaProducer.sendPaymentDetailsEvent(new PaymentDetails(orderDetails, PaymentStatus.PAID.name()));
             orderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), PaymentStatus.PAID.name()));
         }

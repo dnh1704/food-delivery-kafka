@@ -28,13 +28,15 @@ public class PaymentDetailsEventHandler {
     @KafkaListener(topics = "${spring.kafka.payment.details.topic.name:payment-details}", groupId = "restaurant-details-101")
     public void handle(PaymentDetails paymentDetails) throws InterruptedException {
         log.info("received order details event : {}", paymentDetails.orderDetails());
-        if(paymentDetails.orderDetails().restaurantId() >= 100){
+        if(paymentDetails.orderDetails().restaurantId() >= 3){
+            System.out.println("Nha hang khong phuc vu  " + paymentDetails.orderDetails() );
             restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(paymentDetails.orderDetails(), RestaurantStatus.CANCELLED.name()));
             OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(paymentDetails.orderDetails().orderId(), OrderStatus.CANCELLED.name()));
             paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(paymentDetails.orderDetails().orderId(),PaymentStatus.CANCELLED.name()));
             //send order cancel
             //send payment
         }else{
+            System.out.println("Nha hang chuan bi thanh cong  " + paymentDetails.orderDetails() );
             var restaurantOrder = restaurantOrderRepository.save(
                     RestaurantOrder
                             .builder()
