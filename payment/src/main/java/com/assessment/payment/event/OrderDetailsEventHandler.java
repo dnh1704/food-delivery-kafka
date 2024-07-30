@@ -23,7 +23,7 @@ public class OrderDetailsEventHandler {
 
     @KafkaListener(topics = "${spring.kafka.order.details.topic.name:order-details}", groupId = "payment-consumer-101"
            )
-    public void listen(OrderDetails orderDetails) throws InterruptedException {
+    public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
         if (orderDetails.billingAmount().intValue() >= 1000000) {

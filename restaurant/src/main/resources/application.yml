@@ -22,7 +22,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.assessment.*
-#        spring.json.type.mapping: "com.assessment.order.dto.OrderDetails:com.assessment.restaurant.dto.OrderDetails" # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
+        spring.json.type.mapping: com.assessment.payment.dto.OrderDetails:com.assessment.restaurant.dto.OrderDetails # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
     order:
       details:
         topic:
@@ -34,6 +34,9 @@ spring:
       status:
         topic:
           name: payment-status
+      details:
+        topic:
+          name: payment-details
     restaurant:
       status:
         topic:

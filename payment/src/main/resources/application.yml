@@ -20,12 +20,12 @@ spring:
       properties:
         "[request.timeout.ms]": 100
         "[max.block.ms]": 100 # https://stackoverflow.com/questions/49487619/how-to-set-timeout-for-onfailure-event-spring-kafka
-    #    consumer:
-    #      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    #      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    #      properties:
-    #        spring.json.trusted.packages: com.assessment.*
-    #        spring.json.type.mapping: "com.assessment.payment.dto.RestaurantStatusDetails:com.assessment.order.dto.RestaurantStatusDetails"
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.assessment.*
+        spring.json.type.mapping: "com.assessment.order.dto.OrderDetails:com.assessment.payment.dto.OrderDetails" # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
     payment:
       details:
         topic:

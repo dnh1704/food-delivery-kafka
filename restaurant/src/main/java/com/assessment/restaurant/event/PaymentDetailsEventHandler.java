@@ -25,7 +25,7 @@ public class PaymentDetailsEventHandler {
 
     private final OrderDetailsEventService OrderDetailsEventService;
 
-    @KafkaListener(topics = "${spring.kafka.payment.details.topic.name:payment-details}", groupId = "payment-details")
+    @KafkaListener(topics = "${spring.kafka.payment.details.topic.name:payment-details}", groupId = "restaurant-details-101")
     public void handle(OrderDetails orderDetails) throws InterruptedException {
         log.info("received order details event : {}", orderDetails);
         if(orderDetails.restaurantId() >= 100){
