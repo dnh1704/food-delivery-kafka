@@ -24,19 +24,19 @@ public class RestaurantDetailsEventHandler {
     private final PaymentEventService paymentEventService;
     private final OrderEventService orderEventService;
 
-    @KafkaListener(topics = "${spring.kafka.restaurant.details.topic.name:restaurant-details}", groupId = "restaurant-details")
-    public void handle(OrderDetails orderDetails) throws InterruptedException {
-        log.info("received restaurant details event : {}", orderDetails);
+    @KafkaListener(topics = "${spring.kafka.restaurant.details.topic.name:restaurant-details}", groupId = "restaurant-details-101")
+    public void handle(RestaurantDetails restaurantDetails) throws InterruptedException {
+        log.info("received restaurant details event : {}", restaurantDetails);
         // Kiểm tra nếu tiền lớn hơn 1 triệu thì ko được thanh toán
-        if (!orderDetails.deliveryAddress().equals("HN")) {
+        if (!restaurantDetails.deliveryAddress().equals("HN")) {
             // rejcet lai cho pay
-            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(), PaymentStatus.CANCELLED.name()));
+            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(restaurantDetails.orderId(), PaymentStatus.CANCELLED.name()));
 
             // rejcet lai cho order
-            orderEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), OrderStatus.CANCELLED.name()));
+            orderEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(restaurantDetails.orderId(), OrderStatus.CANCELLED.name()));
         } else {
             // giao don hang thanh cong thi bao order
-            orderEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails.orderId(), OrderStatus.DELIVERED.name()));
+            orderEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(restaurantDetails.orderId(), OrderStatus.DELIVERED.name()));
         }
     }
 }

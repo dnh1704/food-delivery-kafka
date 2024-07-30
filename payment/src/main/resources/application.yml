@@ -25,7 +25,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.assessment.*
-        spring.json.type.mapping: "com.assessment.order.dto.OrderDetails:com.assessment.payment.dto.OrderDetails" # https://stackoverflow.com/questions/70278794/spring-boot-kafka-package-name-in-the-message-header
+        spring.json.type.mapping: com.assessment.order.dto.OrderDetails:com.assessment.payment.dto.OrderDetails
+
     payment:
       details:
         topic:
