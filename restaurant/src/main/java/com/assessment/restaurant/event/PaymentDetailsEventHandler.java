@@ -26,26 +26,26 @@ public class PaymentDetailsEventHandler {
     private final OrderDetailsEventService OrderDetailsEventService;
 
     @KafkaListener(topics = "${spring.kafka.payment.details.topic.name:payment-details}", groupId = "restaurant-details-101")
-    public void handle(OrderDetails orderDetails) throws InterruptedException {
-        log.info("received order details event : {}", orderDetails);
-        if(orderDetails.restaurantId() >= 100){
-            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(orderDetails, RestaurantStatus.CANCELLED.name()));
-            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(orderDetails, OrderStatus.CANCELLED.name()));
-            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(orderDetails.orderId(),PaymentStatus.CANCELLED.name()));
+    public void handle(PaymentDetails paymentDetails) throws InterruptedException {
+        log.info("received order details event : {}", paymentDetails.orderDetails());
+        if(paymentDetails.orderDetails().restaurantId() >= 100){
+            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(paymentDetails.orderDetails(), RestaurantStatus.CANCELLED.name()));
+            OrderDetailsEventService.sendOrderStatusDetailsEvent(new OrderStatusDetails(paymentDetails.orderDetails(), OrderStatus.CANCELLED.name()));
+            paymentEventService.sendPaymentStatusDetailsEvent(new PaymentStatusDetails(paymentDetails.orderDetails().orderId(),PaymentStatus.CANCELLED.name()));
             //send order cancel
             //send payment
         }else{
             var restaurantOrder = restaurantOrderRepository.save(
                     RestaurantOrder
                             .builder()
-                            .orderId(orderDetails.orderId())
-                            .restaurantId(orderDetails.restaurantId())
-                            .billingAmount(orderDetails.billingAmount())
+                            .orderId(paymentDetails.orderDetails().orderId())
+                            .restaurantId(paymentDetails.orderDetails().restaurantId())
+                            .billingAmount(paymentDetails.orderDetails().billingAmount())
                             .restaurantStatus(RestaurantStatus.PROCESSING)
                             .build()
             );
 
-            var restaurantOrderItems = orderDetails
+            var restaurantOrderItems = paymentDetails.orderDetails()
                     .items()
                     .stream()
                     .map(i -> RestaurantOrderItem.from(i, restaurantOrder.getId()))
@@ -54,7 +54,7 @@ public class PaymentDetailsEventHandler {
 
             restaurantOrder.setRestaurantStatus(RestaurantStatus.APPROVED);
             restaurantOrderRepository.save(restaurantOrder);
-            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(orderDetails, RestaurantStatus.APPROVED.name()));
+            restaurantEventService.sendRestaurantDetailsEvent(new RestaurantDetails(paymentDetails.orderDetails(), RestaurantStatus.APPROVED.name()));
         }
     }
 }
